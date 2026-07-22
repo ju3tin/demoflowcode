@@ -14,7 +14,7 @@ import '@xyflow/react/dist/style.css';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Plus, Play, Download, Trash2 } from 'lucide-react';
+import { Plus, Play } from 'lucide-react';
 
 const initialNodes: Node[] = [
   {
@@ -45,9 +45,9 @@ export default function FrontendNodesTab() {
       id: Date.now().toString(),
       type: 'customNode',
       position: { x: 400, y: 200 },
-      data: { 
+      data: {
         label: name,
-        code: `export default function ${name.replace(/\s+/g, '')}() {\n  return <div>Custom Component</div>;\n}`
+        code: `export default function ${name.replace(/\s+/g, '')}() {\n  return <div>Custom Component</div>;\n}`,
       },
     };
 
@@ -65,8 +65,16 @@ export default function FrontendNodesTab() {
     if (data.success) {
       alert(`✅ Project generated!\nProject ID: ${data.projectId}`);
     } else {
-      alert('Generation failed');
+      alert('Generation failed: ' + (data.error || 'Unknown error'));
     }
+  };
+
+  const updateNodeCode = (nodeId: string, newCode: string) => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === nodeId ? { ...node, data: { ...node.data, code: newCode } } : node
+      )
+    );
   };
 
   return (
@@ -105,19 +113,19 @@ export default function FrontendNodesTab() {
       {/* Right Sidebar - Node Editor */}
       {selectedNode && (
         <div className="w-96 border-l bg-background p-4 overflow-auto">
-          <h3 className="font-semibold mb-4">Edit Node</h3>
-          <p className="text-sm mb-2">Name: {selectedNode.data.label}</p>
-          
+          <h3 className="font-semibold mb-4">Edit Node: {selectedNode.data.label}</h3>
+
           {selectedNode.type === 'customNode' && (
             <textarea
-              className="w-full h-96 font-mono text-sm p-3 border rounded-md"
+              className="w-full h-96 font-mono text-sm p-3 border rounded-md bg-zinc-950 text-white"
               value={selectedNode.data.code}
-              onChange={(e) => {
-                // Update node code (simplified)
-                console.log('Update code:', e.target.value);
-              }}
+              onChange={(e) => updateNodeCode(selectedNode.id, e.target.value)}
             />
           )}
+
+          <p className="text-xs text-muted-foreground mt-4">
+            Changes are saved automatically
+          </p>
         </div>
       )}
     </div>
