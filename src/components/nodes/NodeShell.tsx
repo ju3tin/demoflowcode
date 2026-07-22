@@ -1,6 +1,6 @@
 "use client";
 
-import { Handle, Position } from "reactflow";
+import { Handle, Position } from "@xyflow/react";
 import type { ReactNode } from "react";
 
 const ACCENT: Record<string, string> = {
