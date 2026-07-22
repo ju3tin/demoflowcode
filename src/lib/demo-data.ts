@@ -4,7 +4,7 @@ import type {
   CanvasOp,
 } from "@/types/flow";
 
-/** Random delay in [min, max] ms — mirrors typical live-API latency. */
+/** Random delay in [min, max] ms — mirrors typical live-API latency.  */
 function jitter(min: number, max: number) {
   return min + Math.random() * (max - min);
 }
