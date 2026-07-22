@@ -15,14 +15,13 @@ import {
 export default function BaseNode({
   id,
   data
-}:any){
+}: any) {
 
 
 const removeNode =
 useFlowStore(
- s=>s.removeNode
+  s => s.removeNode
 )
-
 
 
 return (
@@ -36,6 +35,13 @@ shadow-md
 min-w-[180px]
 "
 >
+
+
+<Handle
+type="target"
+position={Position.Left}
+id="input"
+/>
 
 
 <div
@@ -56,41 +62,29 @@ justify-between
 
 
 <button
-onClick={()=>
- removeNode(id)
-}
+onClick={() => removeNode(id)}
 >
 ×
 </button>
 
-
 </div>
-
 
 
 <div
 className="
 p-3
-text-sm
+text-xs
 "
 >
-
 {data.type}
-
-
 </div>
 
 
 
 <Handle
-type="target"
-position={Position.Left}
-/>
-
-
-<Handle
 type="source"
 position={Position.Right}
+id="output"
 />
 
 
