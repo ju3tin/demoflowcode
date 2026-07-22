@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from 'react';
 import {
   ReactFlow,
   Background,
@@ -8,21 +8,21 @@ import {
   Controls,
   MiniMap,
   type ReactFlowInstance,
-} from "@xyflow/react";
+} from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
 
-import { useFlowStore } from "@/lib/flow-store";
-import type { FlowNodeType } from "@/types/flow";
+import { useFlowStore } from '@/lib/flow-store';
+import type { FlowNodeType } from '@/types/flow';
 
-import { ContractNode } from "@/components/nodes/ContractNode";
-import { VariableNode } from "@/components/nodes/VariableNode";
-import { StructNode } from "@/components/nodes/StructNode";
-import { MappingNode } from "@/components/nodes/MappingNode";
-import { FunctionNode } from "@/components/nodes/FunctionNode";
-import { ModifierNode } from "@/components/nodes/ModifierNode";
-import { EventNode } from "@/components/nodes/EventNode";
-import { NoteNode } from "@/components/nodes/NoteNode";
+import { ContractNode } from '@/components/nodes/ContractNode';
+import { VariableNode } from '@/components/nodes/VariableNode';
+import { StructNode } from '@/components/nodes/StructNode';
+import { MappingNode } from '@/components/nodes/MappingNode';
+import { FunctionNode } from '@/components/nodes/FunctionNode';
+import { ModifierNode } from '@/components/nodes/ModifierNode';
+import { EventNode } from '@/components/nodes/EventNode';
+import { NoteNode } from '@/components/nodes/NoteNode';
 
 const nodeTypes = {
   contract: ContractNode,
@@ -36,35 +36,55 @@ const nodeTypes = {
 };
 
 export function FlowCanvas() {
-  const nodes = useFlowStore((s) => s.nodes);
-  const edges = useFlowStore((s) => s.edges);
-  const onNodesChange = useFlowStore((s) => s.onNodesChange);
-  const onEdgesChange = useFlowStore((s) => s.onEdgesChange);
-  const onConnect = useFlowStore((s) => s.onConnect);
-  const addNode = useFlowStore((s) => s.addNode);
+  const nodes = useFlowStore((state) => state.nodes);
+  const edges = useFlowStore((state) => state.edges);
+  const onNodesChange = useFlowStore((state) => state.onNodesChange);
+  const onEdgesChange = useFlowStore((state) => state.onEdgesChange);
+  const onConnect = useFlowStore((state) => state.onConnect);
+  const addNode = useFlowStore((state) => state.addNode);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const instanceRef = useRef<ReactFlowInstance | null>(null);
 
-  const defaultEdgeOptions = useMemo(() => ({ 
-    style: { strokeWidth: 2, stroke: '#64748b' } 
-  }), []);
+  const defaultEdgeOptions = useMemo(
+    () => ({
+      style: {
+        strokeWidth: 2,
+        stroke: '#64748b',
+      },
+    }),
+    []
+  );
 
-  const onDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-  }, []);
+  const onDragOver = useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'move';
+    },
+    []
+  );
 
   const onDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      const type = e.dataTransfer.getData("application/flow-node-type") as FlowNodeType;
-      if (!type || !wrapperRef.current || !instanceRef.current) return;
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+
+      if (!wrapperRef.current || !instanceRef.current) {
+        return;
+      }
+
+      const type = event.dataTransfer.getData(
+        'application/flow-node-type'
+      ) as FlowNodeType;
+
+      if (!type) {
+        return;
+      }
 
       const bounds = wrapperRef.current.getBoundingClientRect();
+
       const position = instanceRef.current.screenToFlowPosition({
-        x: e.clientX - bounds.left,
-        y: e.clientY - bounds.top,
+        x: event.clientX - bounds.left,
+        y: event.clientY - bounds.top,
       });
 
       addNode(type, position);
@@ -77,13 +97,15 @@ export function FlowCanvas() {
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onInit={(instance) => (instanceRef.current = instance)}
+        onInit={(instance) => {
+          instanceRef.current = instance;
+        }}
         onDrop={onDrop}
         onDragOver={onDragOver}
-        nodeTypes={nodeTypes}
         defaultEdgeOptions={defaultEdgeOptions}
         fitView
         minZoom={0.2}
@@ -96,11 +118,16 @@ export function FlowCanvas() {
           size={1}
           color="var(--border-hairline)"
         />
+
         <Controls showInteractive={false} />
+
         <MiniMap
-          nodeColor={() => "var(--border-strong)"}
-          maskColor="rgba(10,11,13,0.7)"
           pannable
           zoomable
+          nodeColor={() => 'var(--border-strong)'}
+          maskColor="rgba(10,11,13,0.7)"
         />
-      </
+      </ReactFlow>
+    </div>
+  );
+}
