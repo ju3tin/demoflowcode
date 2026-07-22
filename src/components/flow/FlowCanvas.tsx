@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useMemo, useRef } from "react";
-import ReactFlow, {
+import {
+  ReactFlow,
   Background,
   BackgroundVariant,
   Controls,
@@ -58,7 +59,6 @@ export function FlowCanvas() {
     (e: React.DragEvent) => {
       e.preventDefault();
       const type = e.dataTransfer.getData("application/flow-node-type") as FlowNodeType;
-      
       if (!type || !wrapperRef.current || !instanceRef.current) return;
 
       const bounds = wrapperRef.current.getBoundingClientRect();
@@ -103,7 +103,4 @@ export function FlowCanvas() {
           pannable
           zoomable
         />
-      </ReactFlow>
-    </div>
-  );
-}
+      </
