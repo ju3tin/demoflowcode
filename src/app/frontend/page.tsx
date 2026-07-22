@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   Node,
   Edge,
   addEdge,
@@ -9,7 +10,10 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   Background,
+  Handle,
+  Position,
 } from '@xyflow/react';
+
 import '@xyflow/react/dist/style.css';
 
 import { Button } from '@/components/ui/button';
@@ -54,6 +58,14 @@ export default function FrontendNodesTab() {
     setNodes((nds) => nds.concat(newNode));
   };
 
+  const updateNodeCode = (nodeId: string, newCode: string) => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === nodeId ? { ...node, data: { ...node.data, code: newCode } } : node
+      )
+    );
+  };
+
   const generateProject = async () => {
     const res = await fetch('/api/builder/generate-from-nodes', {
       method: 'POST',
@@ -69,29 +81,18 @@ export default function FrontendNodesTab() {
     }
   };
 
-  const updateNodeCode = (nodeId: string, newCode: string) => {
-    setNodes((nds) =>
-      nds.map((node) =>
-        node.id === nodeId ? { ...node, data: { ...node.data, code: newCode } } : node
-      )
-    );
-  };
-
   return (
     <div className="flex h-screen">
-      {/* Toolbar */}
       <div className="w-80 border-r bg-muted/30 p-4 overflow-auto">
         <h2 className="font-semibold mb-4">Nodes Library</h2>
         <Button onClick={addCustomNode} className="w-full mb-2" variant="outline">
           <Plus className="mr-2 h-4 w-4" /> Create Custom Node
         </Button>
-
         <Button onClick={generateProject} className="w-full">
           <Play className="mr-2 h-4 w-4" /> Generate Next.js Code
         </Button>
       </div>
 
-      {/* Canvas */}
       <div className="flex-1">
         <ReactFlow
           nodes={nodes}
@@ -110,11 +111,10 @@ export default function FrontendNodesTab() {
         </ReactFlow>
       </div>
 
-      {/* Right Sidebar - Node Editor */}
       {selectedNode && (
         <div className="w-96 border-l bg-background p-4 overflow-auto">
           <h3 className="font-semibold mb-4">Edit Node: {selectedNode.data.label}</h3>
-
+          
           {selectedNode.type === 'customNode' && (
             <textarea
               className="w-full h-96 font-mono text-sm p-3 border rounded-md bg-zinc-950 text-white"
@@ -122,17 +122,12 @@ export default function FrontendNodesTab() {
               onChange={(e) => updateNodeCode(selectedNode.id, e.target.value)}
             />
           )}
-
-          <p className="text-xs text-muted-foreground mt-4">
-            Changes are saved automatically
-          </p>
         </div>
       )}
     </div>
   );
 }
 
-// Node Components
 function PageNode({ data }: any) {
   return (
     <Card className="px-4 py-3 min-w-[180px] border-blue-400 bg-blue-50">
