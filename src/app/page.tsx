@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ReactFlowProvider } from "reactflow";
+import { ReactFlowProvider } from "@xyflow/react";
 import { NodePalette } from "@/components/panels/NodePalette";
 import { TopBar } from "@/components/panels/TopBar";
 import { FlowCanvas } from "@/components/flow/FlowCanvas";
