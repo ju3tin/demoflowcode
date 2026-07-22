@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useCallback, useMemo, useRef } from "react";
 import ReactFlow, {
@@ -8,8 +8,12 @@ import ReactFlow, {
   MiniMap,
   type ReactFlowInstance,
 } from "@xyflow/react";
+
+import '@xyflow/react/dist/style.css';
+
 import { useFlowStore } from "@/lib/flow-store";
 import type { FlowNodeType } from "@/types/flow";
+
 import { ContractNode } from "@/components/nodes/ContractNode";
 import { VariableNode } from "@/components/nodes/VariableNode";
 import { StructNode } from "@/components/nodes/StructNode";
@@ -41,7 +45,9 @@ export function FlowCanvas() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const instanceRef = useRef<ReactFlowInstance | null>(null);
 
-  const defaultEdgeOptions = useMemo(() => ({ style: { strokeWidth: 2 } }), []);
+  const defaultEdgeOptions = useMemo(() => ({ 
+    style: { strokeWidth: 2, stroke: '#64748b' } 
+  }), []);
 
   const onDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -51,9 +57,8 @@ export function FlowCanvas() {
   const onDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
-      const type = e.dataTransfer.getData(
-        "application/flow-node-type"
-      ) as FlowNodeType;
+      const type = e.dataTransfer.getData("application/flow-node-type") as FlowNodeType;
+      
       if (!type || !wrapperRef.current || !instanceRef.current) return;
 
       const bounds = wrapperRef.current.getBoundingClientRect();
