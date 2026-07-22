@@ -7,7 +7,7 @@ import ReactFlow, {
   Controls,
   MiniMap,
   type ReactFlowInstance,
-} from "reactflow";
+} from "@xyflow/react";
 import { useFlowStore } from "@/lib/flow-store";
 import type { FlowNodeType } from "@/types/flow";
 import { ContractNode } from "@/components/nodes/ContractNode";
